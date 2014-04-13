@@ -20,6 +20,8 @@
  * limitations under the License.
  */
 
+namespace bgernert\libNBT;
+
 interface Tag
 {
     /**
