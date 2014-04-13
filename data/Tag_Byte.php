@@ -38,7 +38,7 @@ class Tag_Byte implements Tag {
     private $value = '';
     
     public function setName(&$name) {
-        //TODO: Check for int
+        //TODO: Check for byte
         $this->name = $name;
     }
     
