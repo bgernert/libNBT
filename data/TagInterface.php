@@ -1,5 +1,4 @@
 <?php
-
 /**
  * TagInterface.php
  *
@@ -31,7 +30,7 @@ interface Tag
      * 
      * @return void
      */
-    public function setName($name);
+    public function setName(&$name);
 
     /**
      * Returns the name of the NBT
@@ -45,7 +44,7 @@ interface Tag
      * 
      * @param mixed $value The value for the NBT
      */
-    public function setValue($value);
+    public function setValue(&$value);
 
     /**
      * Returns the value of the NBT
