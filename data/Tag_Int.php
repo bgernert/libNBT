@@ -1,6 +1,6 @@
 <?php
 /**
- * TagInterface.php
+ * Tag_Int.php
  *
  * Copyright (C) 2014 Björn Gernert
  *
