@@ -52,6 +52,13 @@ interface Tag
      * @return mixed The value of the NBT
      */
     public function getValue();
+    
+    /**
+     * Returns the length of the value
+     * 
+     * @return int Length of the value
+     */
+    public function getLength();
 
     /**
      * Overwrite the toString method

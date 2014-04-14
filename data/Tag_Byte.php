@@ -53,6 +53,10 @@ class Tag_Byte implements Tag {
     public function getValue() {
         return $this->value;
     }
+    
+    public function getLength() {
+        return 1;
+    }
 
     public function __toString() {
         return "TAG_Byte(\"{$this->name}\") {$this->value}\n";

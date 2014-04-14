@@ -53,6 +53,10 @@ class Tag_Int implements Tag {
     public function getValue() {
         return $this->value;
     }
+    
+    public function getLength() {
+        return 4;
+    }
 
     public function __toString() {
         return "TAG_Int(\"{$this->name}\") {$this->value}\n";
