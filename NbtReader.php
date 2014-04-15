@@ -1,6 +1,6 @@
 <?php
 /**
- * TagInterface.php
+ * NbtReader.php
  *
  * Copyright (C) 2014 Björn Gernert
  *
