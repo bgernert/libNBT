@@ -72,11 +72,14 @@ class NbtReader
 
             if($tagType == self::TAG_END)
             {
+                $obj = new data\Tag_End();
+                array_push($tagTree, $obj);
                 break;
             } else {
                 $name = $this->readTagName();
-                $value = $this->readTagType($tagType);
-                array_push($tagTree, array('Name' => $name, 'Wert' => $value));
+                $obj = $this->readTagType($tagType);
+                $obj->setName($name);
+                array_push($tagTree, $obj);
             }
         }
         
@@ -92,7 +95,9 @@ class NbtReader
                 
             case self::TAG_BYTE:
                 $value = unpack('c', fread($this->fileHandle, 1));
-                return $value[1];
+                $obj = new data\Tag_Byte();
+                $obj->setValue($value[1]);
+                return $obj;
 
             case self::TAG_SHORT:
                 $value = unpack('n', fread($this->fileHandle, 2));
@@ -100,7 +105,9 @@ class NbtReader
                 {
                    $value[1] -= pow(2, 16);
                 }
-                return $value[1];
+                $obj = new data\Tag_Short();
+                $obj->setValue($value[1]);
+                return $obj;
             
             case self::TAG_INT:
                 $value = unpack('N', fread($this->fileHandle, 4));
@@ -108,77 +115,107 @@ class NbtReader
                 {
                     $value[1] -= pow(2, 32);
                 }
-                return $value[1];
+                $obj = new data\Tag_Int();
+                $obj->setValue($value[1]);
+                return $obj;
                 
             case self::TAG_LONG:
                 $value1 = unpack('N', fread($this->fileHandle, 4));
                 $value2 = unpack('N', fread($this->fileHandle, 4));
-                return $value1 << 32 | $value2;
+                $obj = new data\Tag_Long();
+                $value = $value1 << 32 | $value2;
+                $obj->setValue($value);
+                return $obj;
                 
             case self::TAG_FLOAT:
                 $value = unpack('f', strrev(fread($this->fileHandle, 4)));
                 //TODO: float conversion
-                return $value[1];
+                $obj = new data\Tag_Float();
+                $obj->setValue($value[1]);
+                return $obj;
                 
             case self::TAG_DOUBLE:
                 $value = unpack('d', strrev(fread($this->fileHandle, 8)));
                 //TODO: double conversion
-                return $value[1];
+                $obj = new data\Tag_Double();
+                $obj->setValue($value[1]);
+                return $obj;
                 
             case self::TAG_BYTE_ARRAY:
-                $length = $this->readTagType(self::TAG_INT);
+                $lengthObj = $this->readTagType(self::TAG_INT);
+                $length = $lengthObj->getValue();
                 $value = array();
                 for($i = 0; $i < $length; ++$i)
                 {
                     array_push($value, $this->readTagType(self::TAG_BYTE));
                 }
-                return $value;
+                $obj = new data\Tag_Byte_Array();
+                $obj->setValue($value);
+                return $obj;
                 
             case self::TAG_STRING:
-                $length = $this->readTagType(self::TAG_SHORT);
+                $lengthObj = $this->readTagType(self::TAG_SHORT);
+                $length = $lengthObj->getValue();
+                $obj = new data\Tag_String();
                 if($length <= 0)
                 {
-                    return "";
+                    return $obj;
                 } else {
-                    return utf8_decode(fread($this->fileHandle, $length));
+                    $value = utf8_decode(fread($this->fileHandle, $length));
+                    $obj->setValue($value);
+                    return $obj;
                 }
                
             case self::TAG_LIST:
-                $tagID = $this->readTagType(self::TAG_BYTE);
-                $length = $this->readTagType(self::TAG_INT);
+                $tagIdObj = $this->readTagType(self::TAG_BYTE);
+                $lengthObj = $this->readTagType(self::TAG_INT);
+                $tagID = $tagIdObj->getValue();
+                $length = $lengthObj->getValue();
                 $value = array();
                 for($i = 0; $i < $length; ++$i)
                 {
                     array_push($value, $this->readTagType($tagID));
                 }
-                return $value;
+                $obj = new data\Tag_List($tagID);
+                $obj->setValue($value);
+                return $obj;
                 
             case self::TAG_COMPOUND:
                 $value = array();
-                return $this->decodeTags();
+                $obj = new data\Tag_Compound();
+                $value = $this->decodeTags();
+                $obj->setValue($value);
+                return $obj;
                 
             case self::TAG_INT_ARRAY:
-                $length = $this->readTagType(self::TAG_INT);
+                $lengthObj = $this->readTagType(self::TAG_INT);
+                $length = $lengthObj->getValue();
                 $value = array();
                 for($i = 0; $i < $length; ++$i)
                 {
                     array_push($value, $this->readTagType(self::TAG_INT));
                 }
-                return $value;
+                $obj = new data\Tag_Int_Array();
+                $obj->setValue($value);
+                return $obj;
                 
             case self::TAG_SHORT_ARRAY:
-                $length = $this->readTagType(self::TAG_INT);
+                $lengthObj = $this->readTagType(self::TAG_INT);
+                $length = $lengthObj->getValue();
                 $value = array();
                 for($i = 0; $i < $length; ++$i)
                 {
                     array_push($value, $this->readTagType(self::TAG_SHORT));
                 }
-                return $value;
+                $obj = new data\Tag_Short_Array();
+                $obj->setValue($value);
+                return $obj;
         }
     }
     
     private function readTagName()
     {
-        return $this->readTagType(self::TAG_STRING);
+        $obj = $this->readTagType(self::TAG_STRING);
+        return $obj->getValue();
     }
 }
