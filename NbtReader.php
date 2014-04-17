@@ -19,6 +19,22 @@
  * limitations under the License.
  */
 
+namespace bgernert\libNBT;
+
+function autoloader($class_name)
+{
+    if(strpos($class_name, __NAMESPACE__) === false)
+            
+    {
+        return false;
+    }
+    
+    $sub_namespace = str_replace('\\', '/', substr($class_name, strlen(__NAMESPACE__)+1));
+    include($sub_namespace . '.php');
+}
+
+spl_autoload_register(__NAMESPACE__ . '\autoloader');
+
 class NbtReader
 {
     const TAG_END = 0;

@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-namespace bgernert\libNBT;
+namespace bgernert\libNBT\data;
 
 class Tag_Short_Array implements Tag {
  
